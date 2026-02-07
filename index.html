@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DAO AI Agent Business Card</title>
+<style>
+body {
+  background:#020617;
+  color:#e5e7eb;
+  font-family:Inter, sans-serif;
+  display:flex;
+  justify-content:center;
+  padding:40px;
+}
+.container { width:460px; }
+input, select, button {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:none;
+}
+button {
+  background:#22d3ee;
+  font-weight:bold;
+  cursor:pointer;
+}
+.card {
+  margin-top:20px;
+  padding:20px;
+  border:1px solid #334155;
+  border-radius:16px;
+  background:#020617;
+}
+.tagline { color:#22d3ee; font-style:italic; }
+.reasoning { font-size:14px; color:#94a3b8; }
+</style>
+</head>
+<body>
+<div class="container">
+<h2>DAO AI Agent Business Card Generator</h2>
+
+<input id="name" placeholder="Agent Name (e.g. Atlas)" />
+<input id="skill" placeholder="Core Skill (e.g. Governance Analysis)" />
+
+<select id="type">
+  <option>DAO Governance Agent</option>
+  <option>DeFi Strategy Agent</option>
+  <option>Protocol Research Agent</option>
+  <option>On-chain Ops Agent</option>
+</select>
+
+<select id="tone">
+  <option>Professional</option>
+  <option>Bold</option>
+  <option>Friendly</option>
+</select>
+
+<button onclick="generate()">Generate Agent Card</button>
+
+<div id="result"></div>
+</div>
+
+<script>
+function generate() {
+  const input = {
+    name: name.value || "Autonomous Agent",
+    skill: skill.value || "Decentralized Coordination",
+    type: type.value,
+    tone: tone.value
+  };
+
+  const context = analyzeWeb3Context(input);
+  const finalTone = decideDAOTone(context);
+
+  const card = {
+    agent_name: input.name,
+    agent_type: input.type,
+    positioning: "Web3 Native",
+    capabilities: [input.skill],
+    personality_traits: personalityByTone(finalTone),
+    tagline: web3Tagline(context.daoRole, finalTone),
+    interaction_mode: "Permissionless"
+  };
+
+  result.innerHTML = `
+  <div class="card">
+    <h3>${card.agent_name}</h3>
+    <p><strong>${card.agent_type}</strong></p>
+    <p>${card.tagline}</p>
+    <p class="reasoning">
+      Agent Reasoning:<br>
+      • Web3 role detected<br>
+      • Governance / economic context analyzed<br>
+      • Tone adjusted to <b>${finalTone}</b>
+    </p>
+    <pre>${JSON.stringify(card, null, 2)}</pre>
+  </div>`;
+}
+
+function analyzeWeb3Context(input) {
+  return {
+    daoRole: input.type.includes("DAO"),
+    governanceFocus: input.skill.toLowerCase().includes("governance"),
+    economicFocus: input.skill.toLowerCase().includes("token"),
+    tonePreference: input.tone
+  };
+}
+
+function decideDAOTone(ctx) {
+  if (ctx.governanceFocus) return "Professional";
+  if (ctx.economicFocus) return "Bold";
+  return ctx.tonePreference;
+}
+
+function personalityByTone(tone) {
+  return {
+    Professional: ["Strategic","Protocol-aligned","Reliable"],
+    Bold: ["Autonomous","Decisive","Fast-executing"],
+    Friendly: ["Collaborative","Adaptive","DAO-friendly"]
+  }[tone];
+}
+
+function web3Tagline(isDAO, tone) {
+  if (isDAO) return "Autonomous intelligence for decentralized coordination.";
+  return {
+    Professional: "Optimizing governance through autonomous reasoning.",
+    Bold: "Executing decisions at protocol speed.",
+    Friendly: "Your AI partner in the decentralized world."
+  }[tone];
+}
+</script>
+</body>
+</html>
